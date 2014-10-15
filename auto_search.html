@@ -1,0 +1,129 @@
+<html>
+
+
+<style type="text/css"> 
+.ul_hide {
+  display : none;    
+}
+
+.ul_show {
+  display: block;
+  list-style-type:none;
+
+}
+
+</style>
+
+<body>
+
+<label>Search </label><input type="text" id="txt"></input>
+<ul id="mt" class="ul_hide"></ul>
+
+
+<script>
+
+
+ 
+(function() {
+
+   
+
+    function AutoSearch() {
+      var tmp = this;
+
+      this.saveSearched = {};
+      this.fruits = ['apple','bananas','pears', 'mangosteen','durian','melon','peach'];
+
+      this.txtPtr = document.getElementById('txt');
+      this.ulPtr = document.getElementById('mt');
+
+     
+      this.setTextEvents();
+
+    
+      this.resetUL = function() {
+         if (this.ulPtr) {
+             this.ulPtr.innerHTML = '';
+         }
+      };
+
+      this.showUL = function() {
+         if (this.ulPtr) {
+             this.ulPtr.className = "ul_show";
+         }
+      };
+
+      this.hideUL = function() {
+          if (this.ulPtr) {
+             this.ulPtr.className = "ul_hide";
+          }
+      };
+
+
+      this.createSearchList = function() {
+            if (tmp.txtPtr) {
+                var val = tmp.txtPtr.value;
+                 
+                var tmpArray = [];
+
+              if (!tmp.saveSearched[val] && val.length > 0)  {  
+                for (var x in tmp.fruits) {
+
+
+                     if (tmp.fruits[x].indexOf(val) >= 0) {
+                         tmpArray.push(tmp.fruits[x]);
+                     }
+                }          
+
+                 tmp.saveSearched[val] = tmpArray.sort();
+
+              } else if (tmp.ulPtr) {
+        
+                  tmp.resetUL();
+                  tmp.hideUL();
+
+              }  
+            } 
+
+            if (tmp.saveSearched[val] && (tmp.saveSearched[val].length > 0) && tmp.ulPtr) {
+               tmp.resetUL();
+              
+               for (var x in tmp.saveSearched[val]) {
+                  var str = tmp.saveSearched[val][x];
+                  var opt = document.createElement('li');
+                  var txt = document.createTextNode(str);
+                  opt.appendChild(txt);
+                  tmp.ulPtr.appendChild(opt);
+                   
+               }
+                tmp.showUL();
+
+            } else {
+                 tmp.resetUL();
+                 tmp.hideUL(); 
+            }
+       }
+    }
+  
+
+    AutoSearch.prototype.setTextEvents = function() {
+       var tmp = this;
+
+       if (this.txtPtr) {              
+           this.txtPtr.addEventListener('keyup', function() {
+                 tmp.pressId = setTimeout(tmp.createSearchList,  100);
+                   
+               } , false);
+       }
+    } 
+
+    new AutoSearch();
+
+})();
+
+</script>
+
+
+</body>
+</html>
+
